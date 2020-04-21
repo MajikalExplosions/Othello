@@ -4,6 +4,7 @@
 
 from graphics import *
 from NikhitaButton import *
+from Board import *
 
 class GUI:
     def __init__(self):
@@ -47,6 +48,12 @@ class GUI:
         blackOutline.draw(self.win)
         self.blackButton = Button(Point(300,400),70,25,"Black",self.win)
         self.blackButton.activate("white")
+
+        # make initial pieces
+        
+        
+
+        
         
 
     def click(self):
@@ -59,10 +66,10 @@ class GUI:
                 return "Quit"
             
             elif self.blackButton.clicked(coord):
-                return "Black"
+                return -1
             
             elif self.whiteButton.clicked(coord):
-                return "White"
+                return 1
             
         
     def startGame(self):
@@ -94,11 +101,31 @@ class GUI:
         return color
         
     def updateScore(color,score):
-        if color=="white":
+        if color==1:
             whiteScore.setText(str(score))
         else:
             blackScore.setText(str(score))
 
-    def updateMessage(color):
+    #def updateMessage(color,moveInd,validMoveInd):
+
+    def newPiece(color,pos):
+        #setPiece(pos,color)
+        
+        coord = posToCoord(pos)
+        
+        piece = Circle(coord,25)
+        if color==1:
+            piece.setFill("white")
+        else:
+            piece.setFill("black")
+        piece.draw(win)
+
+    def posToCoord(pos):
+        
+        
+        
+        
+
+    #def flipPieces(posLst):
         
         
