@@ -50,6 +50,10 @@ class GUI:
         self.blackButton.activate("white")
 
         # make initial pieces
+        self.newPiece(1,[3,3])
+        self.newPiece(1,[4,4])
+        self.newPiece(-1,[3,4])
+        self.newPiece(-1,[4,3])
         
         
 
@@ -100,7 +104,7 @@ class GUI:
 
         return color
         
-    def updateScore(color,score):
+    def updateScore(self,color,score):
         if color==1:
             whiteScore.setText(str(score))
         else:
@@ -108,19 +112,23 @@ class GUI:
 
     #def updateMessage(color,moveInd,validMoveInd):
 
-    def newPiece(color,pos):
+    def newPiece(self,color,pos):
         #setPiece(pos,color)
         
-        coord = posToCoord(pos)
+        coord = self.posToCoord(pos)
         
         piece = Circle(coord,25)
         if color==1:
             piece.setFill("white")
         else:
             piece.setFill("black")
-        piece.draw(win)
+        piece.draw(self.win)
 
-    def posToCoord(pos):
+    def posToCoord(self,pos):
+        y = 75+37.5+75*pos[1]
+        x = 500+37.5+75*pos[0]
+        coord = Point(x,y)
+        return coord
         
         
         
