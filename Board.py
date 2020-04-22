@@ -1,3 +1,9 @@
+# File: Board.py
+# Written By: Joseph Liu
+# Date: 4/14/20
+# This module keeps track of the board's state as well as variables that the AI uses, such as stability and count.
+
+
 class Board:
 
     def __init__(self):
@@ -36,7 +42,7 @@ class Board:
         self.board[3][4], self.board[4][3] = -1, -1
 
     def gameOver(self):
-        return len(getMoves(-1)) == 0 and len(getMoves(1)) == 0
+        return len(self.getMoves(-1)) == 0 and len(self.getMoves(1)) == 0
 
     def countPieces(self, player):
         return self.count[(player + 1) // 2]
@@ -105,14 +111,14 @@ class Board:
                 index += 1
             #Now check if it quit because of index errors, if it did update stability of chips that were moved through
             if not self._inRange(location[0] + d[0] * index) or not self._inRange(location[1] + d[1] * index):
-
+                print("Updating stability.")
                 #Start at the same location and go backwards, updating stability
                 index = index - 1
                 while self._inRange(location[0] + d[0] * index) and self._inRange(location[1] + d[1] * index):
-                    if self.getPiece(location[0] + d[0] * index, location[1] + d[1] * index) != player:
+                    if self.getPiece((location[0] + d[0] * index, location[1] + d[1] * index)) != player:
                         break
                     #If stable[x][y][i] = true, that means if you travel in direction dir[i] you will only find friendly pieces and then a wall
-                    self.stable[location[0] + d[0] * index][location[1] + d[1] * index][d] = True
+                    self.stable[location[0] + d[0] * index][location[1] + d[1] * index][i] = True
 
                     #Move one square back
                     index -= 1
@@ -122,17 +128,30 @@ class Board:
         return number >= 0 and number <= 7
     
     def _isStable(self, location):
-        return (self.stable[0] or self.stable[4]) and (self.stable[1] or self.stable[5]) and (self.stable[2] or self.stable[6]) and (self.stable[3] or self.stable[7])
+        return (self.stable[location[0]][location[1]][0] or self.stable[location[0]][location[1]][4]) and (self.stable[location[0]][location[1]][1] or self.stable[location[0]][location[1]][5]) and (self.stable[location[0]][location[1]][2] or self.stable[location[0]][location[1]][6]) and (self.stable[location[0]][location[1]][3] or self.stable[location[0]][location[1]][7])
     
     def _printBoard(self):
         print("\nBoard State:\n")
         for i in range(8):
-            print(self.board[i])
-        
+            for j in range(8):
+                val = self.getPiece((i, j))
+                if val == 0:
+                    print("-", end="")
+                
+                elif val == -1:
+                    if self._isStable((i, j)):
+                        print("B", end="")
+                    else:
+                        print("b", end="")
+                
+                elif val == 1:
+                    if self._isStable((i, j)):
+                        print("W", end="")
+                    else:
+                        print("w", end="")
+                
+                elif val == 3:
+                    print("O", end="")
+            
+            print()
         print("\n")
-
-#b = Board()
-#b._printBoard()
-#for move in b.getMoves(-1):
-#    b.setPiece(move, 2)
-#b._printBoard()
