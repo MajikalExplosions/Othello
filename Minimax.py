@@ -34,9 +34,15 @@ class Minimax:
         
         for move in self.board.getMoves(player):
             
-            self.board.move(player, move)
+            flip = self.board.setPiece(move, player)
+            
+            for i in range(len(flip)):
+                t, flip[i] = flip[i], self.board.getPiece(flip[i])
+                self.board.setPiece(t, player)
+            
             res = self.minimax(-1 * player, depth + 1, target, alpha, beta)
-            self.board.move(0, move)
+            self.board.setPiece(move, 0)
+            
 
             if player == 1:
                 best[0] = max(best[0], res[0])
@@ -70,7 +76,7 @@ class Minimax:
         
         utility = 0
         #It's not, so find the utility
-        # TODO find the utility
+        # TODO find the utility.  Perhaps also rotate it 3 times and find those utilities too?
 
         #Now add it to hash table so we don't have to look it up anymore and return
         self.table[boardHash] = utility
