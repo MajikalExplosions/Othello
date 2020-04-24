@@ -70,6 +70,11 @@ class GUI:
             
             elif self.whiteButton.clicked(coord):
                 return 1
+
+            elif 500<coord[0]<1175 and 75<coord[1]<750:
+                tile = self.coordToPos(coord)
+                return tile
+                
             
         
     def startGame(self):
@@ -102,9 +107,9 @@ class GUI:
         
     def updateScore(self,color,score):
         if color==1:
-            whiteScore.setText(str(score))
+            self.whiteScore.setText(str(score))
         else:
-            blackScore.setText(str(score))
+            self.blackScore.setText(str(score))
 
     #def updateMessage(color,moveInd,validMoveInd):
 
@@ -120,10 +125,23 @@ class GUI:
             piece.setFill("black")
         piece.draw(self.win)
 
+        if flipInd==True:
+            for piece in flipPieceLst:
+                color = getPiece(piece)
+                setPiece(piece,color*-1)
+                
+
     def posToCoord(self,pos):
         y = 75+37.5+75*pos[1]
         x = 500+37.5+75*pos[0]
         coord = Point(x,y)
         return coord
+
+    def coordToPos(self,coord):
+        x,y=coord[0],coord[1]
+        pos = [0,0]
+        pos[0] = (x-500)//75
+        pos[1] = (y-75)//75
+        return pos
     
         
