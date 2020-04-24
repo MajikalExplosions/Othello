@@ -5,5 +5,22 @@
 
 from GUI import *
 
-gui = GUI()
-humanColor = gui.startGame()
+def main():
+    gui = GUI()
+    human = gui.startGame()
+    whiteScore = 0
+    blackScore = 0
+    
+    running=True
+    turn = 1
+    while running == True:
+        turn*=-1
+        clickPt = gui.Click()
+        if clickPt=="Quit":
+            running=False
+            break
+        else:
+            newPiece(turn,clickPt,True)
+
+main()
+            
