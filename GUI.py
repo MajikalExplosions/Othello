@@ -50,14 +50,10 @@ class GUI:
         self.blackButton.activate("white")
 
         # make initial pieces
-        self.newPiece(1,[3,3])
-        self.newPiece(1,[4,4])
-        self.newPiece(-1,[3,4])
-        self.newPiece(-1,[4,3])
-        
-        
-
-        
+        self.newPiece(1,[3,3],False)
+        self.newPiece(1,[4,4],False)
+        self.newPiece(-1,[3,4],False)
+        self.newPiece(-1,[4,3],False)
         
 
     def click(self):
@@ -112,8 +108,8 @@ class GUI:
 
     #def updateMessage(color,moveInd,validMoveInd):
 
-    def newPiece(self,color,pos):
-        #setPiece(pos,color)
+    def newPiece(self,color,pos,flipInd):
+        flipPieceLst = setPiece(pos,color)
         
         coord = self.posToCoord(pos)
         
@@ -129,11 +125,5 @@ class GUI:
         x = 500+37.5+75*pos[0]
         coord = Point(x,y)
         return coord
-        
-        
-        
-        
-
-    #def flipPieces(posLst):
-        
+    
         
