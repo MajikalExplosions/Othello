@@ -6,7 +6,8 @@
 from GUI import *
 
 def main():
-    gui = GUI()
+    board = Board()
+    gui = GUI(Board)
     human = gui.startGame()
     whiteScore = 0
     blackScore = 0
