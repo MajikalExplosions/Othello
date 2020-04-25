@@ -7,7 +7,7 @@ from NikhitaButton import *
 from Board import *
 
 class GUI:
-    def __init__(self):
+    def __init__(self,board):
 
         # make window
         self.win = GraphWin("Othello",1200,750)
@@ -50,10 +50,10 @@ class GUI:
         self.blackButton.activate("white")
 
         # make initial pieces
-        self.newPiece(1,[3,3],False)
-        self.newPiece(1,[4,4],False)
-        self.newPiece(-1,[3,4],False)
-        self.newPiece(-1,[4,3],False)
+        self.newPiece(board,1,[3,3],False)
+        self.newPiece(board,1,[4,4],False)
+        self.newPiece(board,-1,[3,4],False)
+        self.newPiece(board,-1,[4,3],False)
         
 
     def click(self):
@@ -113,8 +113,8 @@ class GUI:
 
     #def updateMessage(color,moveInd,validMoveInd):
 
-    def newPiece(self,color,pos,flipInd):
-        flipPieceLst = setPiece(pos,color)
+    def newPiece(self,board,color,pos,flipInd):
+        flipPieceLst = board.setPiece(pos,color)
         
         coord = self.posToCoord(pos)
         
@@ -127,8 +127,8 @@ class GUI:
 
         if flipInd==True:
             for piece in flipPieceLst:
-                color = getPiece(piece)
-                setPiece(piece,color*-1)
+                color = board.getPiece(piece)
+                board.setPiece(piece,(color*-1))
                 
 
     def posToCoord(self,pos):
