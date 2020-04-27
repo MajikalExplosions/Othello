@@ -81,9 +81,13 @@ class Minimax:
         #It's not, so find the utility
         # TODO find the utility.  Perhaps also rotate it 3 times and find those utilities too?
         discM = max(self.discMultiplier[0] + (self.discMultiplier[1] - self.discMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
-        mobilityM = max(self.mobilityMultiplier[0] + (self.mobilityMultiplier[1] - self.mobilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
-        stabilityM = max(self.stabilityMultiplier[0] + (self.stabilityMultiplier[1] - self.stabilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
-        
+
+        #Mobility is (on average) 8
+        mobilityM = max(self.mobilityMultiplier[0] + (self.mobilityMultiplier[1] - self.mobilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0) * 5
+
+        #Stability is (on average) 20
+        stabilityM = max(self.stabilityMultiplier[0] + (self.stabilityMultiplier[1] - self.stabilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0) * 2
+
         utility = discM * (self.board.countPieces(1) - self.board.countPieces(-1))
         utility += stabilityM * (self.board.countStablePieces(1) - self.board.countStablePieces(-1))
         utility += mobilityM * (len(self.board.getMoves(1)) - len(self.board.getMoves(-1)))
