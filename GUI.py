@@ -71,7 +71,7 @@ class GUI:
             elif self.whiteButton.clicked(coord):
                 return 1
 
-            elif 500<coord[0]<1175 and 75<coord[1]<750:
+            elif 500<coord.getX()<1175 and 75<coord.getY()<750:
                 tile = self.coordToPos(coord)
                 return tile
                 
@@ -111,13 +111,28 @@ class GUI:
         else:
             self.blackScore.setText(str(score))
 
-    #def updateMessage(color,moveInd,validMoveInd):
+    def updateMessage(color,moveInd,validMoveInd):
+
+        # color
+        if color==1:
+            colorTxt = "White"
+        else:
+            colorTxt = "Black"
+
+        if not moveInd:
+            txt = "This square is invalid. Please choose a valid square."
+        elif not validMoveInd:
+            txt = "You have no valid moves. Please click anywhere to continue."
+        else:
+            txt = "It is "+colorTxt+"'s turn - please click a valid open square."
+
+        return txt
 
     def newPiece(self,board,color,pos,flipInd):
         flipPieceLst = board.setPiece(pos,color)
         
         coord = self.posToCoord(pos)
-        
+
         piece = Circle(coord,25)
         if color==1:
             piece.setFill("white")
@@ -128,7 +143,7 @@ class GUI:
         if flipInd==True:
             for piece in flipPieceLst:
                 color = board.getPiece(piece)
-                board.setPiece(piece,(color*-1))
+                self.newPiece(board,(color*-1),piece,False)
                 
 
     def posToCoord(self,pos):
@@ -138,10 +153,10 @@ class GUI:
         return coord
 
     def coordToPos(self,coord):
-        x,y=coord[0],coord[1]
+        x,y=coord.getX(),coord.getY()
         pos = [0,0]
-        pos[0] = (x-500)//75
-        pos[1] = (y-75)//75
+        pos[0] = int((x-500)//75)
+        pos[1] = int((y-75)//75)
         return pos
     
         
