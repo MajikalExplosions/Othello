@@ -13,6 +13,7 @@ from random import random
 
 def main():
     b = Board()
+    #Black (-1) is the good bot, white (1) is the bad bot.  Don't worry about the last three tuples because those are AI utility parameters.
     players = [OthelloBot(-1, b, (-2, 0.75), (0.5, 0.25), (1, 0.5)), OthelloBot(1, b, (0.1, 0.1), (0.1, 0.1), (0.1, 0.1))]
     p = 0
     while not b.gameOver():
