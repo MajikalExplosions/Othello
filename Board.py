@@ -14,29 +14,7 @@ class Board:
             self.stable.append([])
             self.count = [2, 2]
             for j in range(8):
-                self.stable[i].append([False, False, False, False, False, False, False, False])
-        
-        #If stable[x][y][i] = true, that means if you travel in direction dir[i] you will only find friendly pieces and then a wall
-        for i in range(8):
-            #Top (+y)
-            self.stable[i][7][0] = True
-            self.stable[i][7][1] = True
-            self.stable[i][7][3] = True
-
-            #Down (-y)
-            self.stable[i][0][4] = True
-            self.stable[i][0][5] = True
-            self.stable[i][0][7] = True
-
-            #Left (-x)
-            self.stable[0][i][5] = True
-            self.stable[0][i][6] = True
-            self.stable[0][i][3] = True
-
-            #Right (+x)
-            self.stable[7][i][1] = True
-            self.stable[7][i][2] = True
-            self.stable[7][i][7] = True
+                self.stable[i].append(False)
         
         self.board[3][3], self.board[4][4] = 1, 1
         self.board[3][4], self.board[4][3] = -1, -1
@@ -57,7 +35,7 @@ class Board:
         count = 0
         for i in range(8):
             for j in range(8):
-                if self.getPiece((i, j)) == player and self._isStable((i, j)):
+                if self.getPiece((i, j)) == player and self.stable[i][j]:
                     count += 1
         
         return count
@@ -140,107 +118,61 @@ class Board:
     def resetStability(self):
         for i in range(8):
             for j in range(8):
-                for k in range(8):
-                    self.stable[i][j][k] = False
+                self.stable[i][j] = False
 
     def updateStability(self):
         self.resetStability()
+        self._runStability(-1)
+        self._runStability(1)
+    
+    def _runStability(self, player):
+        queue = []
+        if self.getPiece((0, 0)) == player:
+            queue.append((0, 0))
+            self.stable[0][0] = True
 
-        for i in range(8):
-            #Vertical
-            initBot = self.getPiece((i, 0))
-            initTop = self.getPiece((i, 7))
+        if self.getPiece((7, 0)) == player:
+            queue.append((7, 0))
+            self.stable[7][0] = True
 
-            index, lastOpposite = 0, (-1, -1)
-            while initBot != 0 and index < 8 and self.getPiece((i, index)) == initBot:
-                self.stable[i][index][4] = True
-                index += 1
-            
-            index, lastOpposite = 0, (-1, -1)
-            while initTop != 0 and index < 8 and self.getPiece((i, 7 - index)) == initTop:
-                self.stable[i][7 - index][0] = True
-                index += 1
-            
-            #Horizontal
-            initLeft = self.getPiece((0, i))
-            initRight = self.getPiece((7, i))
+        if self.getPiece((0, 7)) == player:
+            queue.append((0, 7))
+            self.stable[0][7] = True
 
-            index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 and self.getPiece((index, i)) == initLeft:
-                self.stable[index][i][6] = True
-                index += 1
-            
-            index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 and self.getPiece((7 - index, i)) == initRight:
-                self.stable[7 - index][i][2] = True
-                index += 1
-
-            #Diagonal Bots
-            #Diagonal up (5, 1)
-            initLeft = self.getPiece((i, 0))
-            initRight = self.getPiece((7, 7 - i))
-
-            index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 - i and self.getPiece((i + index, index)) == initLeft:
-                self.stable[i + index][index][5] = True
-                index += 1
-            
-            index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 - i and self.getPiece((7 - index, 7 - i - index)) == initRight:
-                self.stable[7 - index][7 - i - index][1] = True
-                index += 1
-
-            #Diagonal down (7, 3)
-            initLeft = self.getPiece((0, 7 - i))
-            initRight = self.getPiece((7 - i, 0))
-
-            index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 - i and self.getPiece((index, 7 - index - i)) == initLeft:
-                self.stable[index][7 - index - i][3] = True
-                index += 1
-            
-            index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 - i and self.getPiece((7 - i - index, index)) == initRight:
-                self.stable[7 - i - index][index][7] = True
-                index += 1
-
-            #Diagonal Tops
-            #Diagonal up (5, 1)
-            initLeft = self.getPiece((0, i))
-            initRight = self.getPiece((7 - i, 7))
-
-            index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 - i and self.getPiece((index, i + index)) == initLeft:
-                self.stable[index][i + index][5] = True
-                index += 1
-            
-            index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 - i and self.getPiece((7 - index - i, 7 - index)) == initRight:
-                self.stable[7 - index - i][7 - index][1] = True
-                index += 1
-
-            #Diagonal down
-            initLeft = self.getPiece((i, 7))
-            initRight = self.getPiece((7, i))
-
-            index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 - i and self.getPiece((i + index, 7 - index)) == initLeft:
-                self.stable[i + index][7 - index][3] = True
-                index += 1
-            
-            index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 - i and self.getPiece((7 - index, i + index)) == initRight:
-                self.stable[7 - index][i + index][7] = True
-                index += 1
+        if self.getPiece((7, 7)) == player:
+            queue.append((7, 7))
+            self.stable[7][7] = True
+        
+        while len(queue) > 0:
+            disc = queue.pop()
+            #Update all adjacent squares for stability
+            for dx in [-1, 0, 1]:
+                for dy in [-1, 0, 1]:
+                    #If either dx or dy are non-zero then it's not the center square
+                    #If in range AND not center square AND not stable
+                    x, y = disc[0] + dx, disc[1] + dy
+                    if self._inRange(x) and self._inRange(y) and (dx != 0 or dy != 0) and not self._isStable((x, y)) and self.getPiece((x, y)) == player:
+                        horizontal = self._checkStable((x + 1, y), player) or self._checkStable((x - 1, y), player)
+                        vertical = self._checkStable((x, y + 1), player) or self._checkStable((x, y - 1), player)
+                        diagDown = self._checkStable((x + 1, y - 1), player) or self._checkStable((x - 1, y + 1), player)
+                        diagUp = self._checkStable((x + 1, y + 1), player) or self._checkStable((x - 1, y - 1), player)
+                        if horizontal and vertical and diagDown and diagUp:
+                            self.stable[x][y] = True
+                            queue.append((x, y))
 
     def _inRange(self, number):
         return number >= 0 and number <= 7
     
+    def _checkStable(self, location, player):
+        if not self._inRange(location[0]) or not self._inRange(location[1]):
+            return True
+        return self._isStable(location) and self.getPiece(location) == player
+
     def _isStable(self, location):
-        return (self.stable[location[0]][location[1]][0] or self.stable[location[0]][location[1]][4]) and (self.stable[location[0]][location[1]][1] or self.stable[location[0]][location[1]][5]) and (self.stable[location[0]][location[1]][2] or self.stable[location[0]][location[1]][6]) and (self.stable[location[0]][location[1]][3] or self.stable[location[0]][location[1]][7])
+        return self.stable[location[0]][location[1]]
     
     def _printBoard(self):
-        print("\nBoard State:\n")
+        print("\nBoard State:")
         for i in range(8):
             for j in range(8):
                 val = self.getPiece((i, j))
@@ -263,4 +195,3 @@ class Board:
                     print("O", end="")
             
             print()
-        print("\n")

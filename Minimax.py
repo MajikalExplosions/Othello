@@ -27,7 +27,7 @@ class Minimax:
                 return [self.INF, []]
             elif w < b:
                 return [-1 * self.INF, []]
-            return 0
+            return [0, []]
         elif depth >= target:
             return [self._getUtility(depth), []]
         
