@@ -7,7 +7,7 @@ from GUI import *
 
 def main():
     board = Board()
-    gui = GUI(Board)
+    gui = GUI(board)
     human = gui.startGame()
     whiteScore = 0
     blackScore = 0
@@ -16,12 +16,11 @@ def main():
     turn = 1
     while running == True:
         turn*=-1
-        clickPt = gui.Click()
+        clickPt = gui.click()
         if clickPt=="Quit":
             running=False
             break
         else:
-            newPiece(turn,clickPt,True)
+            gui.newPiece(board,turn,clickPt,True)
 
 main()
-            
