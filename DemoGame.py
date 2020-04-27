@@ -16,6 +16,7 @@ def main():
     #Black (-1) is the good bot, white (1) is the bad bot.  Don't worry about the last three tuples because those are AI utility parameters.
     players = [OthelloBot(-1, b, (-2, 0.75), (0.5, 0.25), (1, 0.5)), OthelloBot(1, b, (0.1, 0.1), (0.1, 0.1), (0.1, 0.1))]
     p = 0
+    longest = 0
     while not b.gameOver():
         if len(b.getMoves(players[p].getTeam())) == 0:
             p = (p + 1) % 2
@@ -30,7 +31,9 @@ def main():
         b._printBoard()
         print("White:", b.countPieces(1), " | Black:", b.countPieces(-1))
         print("Time spent to move:", round((time() - t) * 1000), "ms\n")
+        longest = max(longest, round((time() - t) * 1000))
         print("-----------------------------------------------")
     b._printBoard()
     print("White:", b.countPieces(1), " | Black:", b.countPieces(-1))
+    print("Longest turn:", longest)
 main()
