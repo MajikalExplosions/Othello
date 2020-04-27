@@ -152,12 +152,12 @@ class Board:
             initTop = self.getPiece((i, 7))
 
             index, lastOpposite = 0, (-1, -1)
-            while initBot != 0 and index < 8 and self.getPiece((i, index)) != 0:
+            while initBot != 0 and index < 8 and self.getPiece((i, index)) == initBot:
                 self.stable[i][index][4] = True
                 index += 1
             
             index, lastOpposite = 0, (-1, -1)
-            while initTop != 0 and index < 8 and self.getPiece((i, 7 - index)) != 0:
+            while initTop != 0 and index < 8 and self.getPiece((i, 7 - index)) == initTop:
                 self.stable[i][7 - index][0] = True
                 index += 1
             
@@ -166,12 +166,12 @@ class Board:
             initRight = self.getPiece((7, i))
 
             index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 and self.getPiece((index, i)) != 0:
+            while initLeft != 0 and index < 8 and self.getPiece((index, i)) == initLeft:
                 self.stable[index][i][6] = True
                 index += 1
             
             index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 and self.getPiece((7 - index, i)) != 0:
+            while initRight != 0 and index < 8 and self.getPiece((7 - index, i)) == initRight:
                 self.stable[7 - index][i][2] = True
                 index += 1
 
@@ -181,12 +181,12 @@ class Board:
             initRight = self.getPiece((7, 7 - i))
 
             index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 - i and self.getPiece((i + index, index)) != 0:
+            while initLeft != 0 and index < 8 - i and self.getPiece((i + index, index)) == initLeft:
                 self.stable[i + index][index][5] = True
                 index += 1
             
             index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 - i and self.getPiece((7 - index, 7 - i - index)) != 0:
+            while initRight != 0 and index < 8 - i and self.getPiece((7 - index, 7 - i - index)) == initRight:
                 self.stable[7 - index][7 - i - index][1] = True
                 index += 1
 
@@ -195,12 +195,12 @@ class Board:
             initRight = self.getPiece((7 - i, 0))
 
             index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 - i and self.getPiece((index, 7 - index - i)) != 0:
+            while initLeft != 0 and index < 8 - i and self.getPiece((index, 7 - index - i)) == initLeft:
                 self.stable[index][7 - index - i][3] = True
                 index += 1
             
             index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 - i and self.getPiece((7 - i - index, index)) != 0:
+            while initRight != 0 and index < 8 - i and self.getPiece((7 - i - index, index)) == initRight:
                 self.stable[7 - i - index][index][7] = True
                 index += 1
 
@@ -210,12 +210,12 @@ class Board:
             initRight = self.getPiece((7 - i, 7))
 
             index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 - i and self.getPiece((index, i + index)) != 0:
+            while initLeft != 0 and index < 8 - i and self.getPiece((index, i + index)) == initLeft:
                 self.stable[index][i + index][5] = True
                 index += 1
             
             index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 - i and self.getPiece((7 - index - i, 7 - index)) != 0:
+            while initRight != 0 and index < 8 - i and self.getPiece((7 - index - i, 7 - index)) == initRight:
                 self.stable[7 - index - i][7 - index][1] = True
                 index += 1
 
@@ -224,12 +224,12 @@ class Board:
             initRight = self.getPiece((7, i))
 
             index, lastOpposite = 0, (-1, -1)
-            while initLeft != 0 and index < 8 - i and self.getPiece((i + index, 7 - index)) != 0:
+            while initLeft != 0 and index < 8 - i and self.getPiece((i + index, 7 - index)) == initLeft:
                 self.stable[i + index][7 - index][3] = True
                 index += 1
             
             index, lastOpposite = 0, (-1, -1)
-            while initRight != 0 and index < 8 - i and self.getPiece((7 - index, i + index)) != 0:
+            while initRight != 0 and index < 8 - i and self.getPiece((7 - index, i + index)) == initRight:
                 self.stable[7 - index][i + index][7] = True
                 index += 1
 
