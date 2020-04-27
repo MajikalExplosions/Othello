@@ -17,13 +17,13 @@ class OthelloBot:
         return self.team
     
     def getMove(self):
-        return 0
+        move = self.minimax.minimax(self.team, 0, 4, -1000000, 1000000)
+        if len(move) == 0 or len(move[1]) == 0:
+            return self.getDebugMove()
+        return move[1][-1]
 
     def getDebugMove(self):
         options = self.board.getMoves(self.team)
-        for option in options:
-            self.board.board[option[0]][option[1]] = 3
-        self.board._printBoard()
-        for option in options:
-            self.board.board[option[0]][option[1]] = 0
+        if len(options) == 0:
+            return (-1, -1)
         return options[random.randrange(len(options))]

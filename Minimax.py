@@ -9,7 +9,9 @@ from Board import Board
 class Minimax:
 
     def __init__(self, board, discMultiplier, mobilityMultiplier, stabilityMultiplier):
-        self.multipliers = [discMultiplier, mobilityMultiplier, stabilityMultiplier]
+        self.discMultiplier = discMultiplier
+        self.mobilityMultiplier = mobilityMultiplier
+        self.stabilityMultiplier = stabilityMultiplier
         self.INF = 1000000
         #Dictionary, works as a hash table
         self.table = {}
@@ -22,32 +24,33 @@ class Minimax:
         if self.board.gameOver():
             b, w = self.board.countPieces(False), self.board.countPieces(True)
             if w > b:
-                return self.INF
+                return [self.INF, []]
             elif w < b:
-                return -1 * self.INF
+                return [-1 * self.INF, []]
             return 0
         elif depth >= target:
-            return [self._getUtility(player, depth), []]
+            return [self._getUtility(depth), []]
         
         #Initial best is to not move
-        best = [self._getUtility(player, depth), []]
+        best = [self._getUtility(depth), []]
         
         for move in self.board.getMoves(player):
             
-            flip = self.board.setPiece(move, player)
-            
-            for i in range(len(flip)):
-                t, flip[i] = flip[i], self.board.getPiece(flip[i])
-                self.board.setPiece(t, player)
-            
-            res = self.minimax(-1 * player, depth + 1, target, alpha, beta)
-            self.board.setPiece(move, 0)
-            
+            #Move
+            flips = self.board.move(move, player)
 
+            #Recurse
+            res = self.minimax(-1 * player, depth + 1, target, alpha, beta)
+
+            #Undo move
+            for flip in flips:
+                self.board.setPiece(flip[0], flip[1])
+            self.board.updateStability()
+            
+            #Update alpha-beta
             if player == 1:
                 best[0] = max(best[0], res[0])
                 alpha = max(best[0], alpha)
-                best[1] = move
                 if best[0] == res[0]:
                     best[1].append(move)
             else:
@@ -77,7 +80,13 @@ class Minimax:
         utility = 0
         #It's not, so find the utility
         # TODO find the utility.  Perhaps also rotate it 3 times and find those utilities too?
-
+        discM = max(self.discMultiplier[0] + (self.discMultiplier[1] - self.discMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
+        mobilityM = max(self.mobilityMultiplier[0] + (self.mobilityMultiplier[1] - self.mobilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
+        stabilityM = max(self.stabilityMultiplier[0] + (self.stabilityMultiplier[1] - self.stabilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
+        
+        utility = discM * (self.board.countPieces(1) - self.board.countPieces(-1))
+        utility += stabilityM * (self.board.countStablePieces(1) - self.board.countStablePieces(-1))
+        utility += mobilityM * (len(self.board.getMoves(1)) - len(self.board.getMoves(-1)))
         #Now add it to hash table so we don't have to look it up anymore and return
         self.table[boardHash] = utility
         return utility
@@ -86,7 +95,7 @@ class Minimax:
         val = depth + 1
         for i in range(8):
             for j in range(8):
-                square = self.board.getPiece(i, j) + 1
+                square = self.board.getPiece((i, j)) + 1
                 val = val * 3 + square
         return val
     
