@@ -111,7 +111,7 @@ class GUI:
         else:
             self.blackScore.setText(str(score))
 
-    def updateMessage(color,moveInd,validMoveInd):
+    def updateMessage(self,color,moveInd,validMoveInd):
 
         # color
         if color==1:
@@ -129,21 +129,45 @@ class GUI:
         return txt
 
     def newPiece(self,board,color,pos,flipInd):
-        flipPieceLst = board.setPiece(pos,color)
-        
-        coord = self.posToCoord(pos)
+        if flipInd==True:
+            flipPieceLst = board.move(pos,color)
+            for piece in flipPieceList:
+                color = piece[1]*-1
+                self.drawPiece(color,pos)
 
+        else:
+            self.drawPiece(color,pos)
+
+                
+    def drawPiece(self,color,pos):
+        coord = posToCoord(pos)
+        
         piece = Circle(coord,25)
+        
         if color==1:
             piece.setFill("white")
         else:
             piece.setFill("black")
-        piece.draw(self.win)
 
-        if flipInd==True:
-            for piece in flipPieceLst:
-                color = board.getPiece(piece)
-                self.newPiece(board,(color*-1),piece,False)
+        piece.draw(self.win)
+        
+
+        
+##        flipPieceLst = board.setPiece(pos,color)
+##        
+##        coord = self.posToCoord(pos)
+##
+##        piece = Circle(coord,25)
+##        if color==1:
+##            piece.setFill("white")
+##        else:
+##            piece.setFill("black")
+##        piece.draw(self.win)
+##
+##        if flipInd==True:
+##            for piece in flipPieceLst:
+##                color = board.getPiece(piece)
+##                self.newPiece(board,(color*-1),piece,False)
                 
 
     def posToCoord(self,pos):
