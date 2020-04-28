@@ -64,6 +64,10 @@ def main():
 
             # game is over
             if board.gameOver():
+                whiteScore = board.countPieces(1)
+                blackScore = board.countPieces(-1)
+                gui.updateScore(1,whiteScore)
+                gui.updateScore(-1,blackScore)
 
                 # check who won
                 if board.countPieces(1) > board.countPieces(-1):
