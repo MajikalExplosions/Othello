@@ -19,7 +19,7 @@ class Minimax:
         self.board = board
 
     #Board is the board object, player is the current player, depth is the current depth, target is the depth I want to search to, alpha/beta is for pruning
-    def minimax(self, player, depth, target, alpha, beta):
+    def minimax(self, player, depth, alpha, beta):
         #Base case: game over, or depth is too large
         if self.board.gameOver():
             b, w = self.board.countPieces(False), self.board.countPieces(True)
@@ -28,19 +28,21 @@ class Minimax:
             elif w < b:
                 return [-1 * self.INF, []]
             return [0, []]
-        elif depth >= target:
-            return [self._getUtility(depth), []]
+        elif depth == 0:
+            return [self._getUtility(self.board.getMoveNumber()), []]
         
+        #print(player, depth)
+
         #Initial best is to lose
         best = [player * self.INF * -1, []]
-        hasMoved = False
+
         for move in self.board.getMoves(player):
             
             #Move
             flips = self.board.move(move, player)
 
             #Recurse
-            res = self.minimax(-1 * player, depth + 1, target, alpha, beta)
+            res = self.minimax(-1 * player, depth - 1, alpha, beta)
 
             #Undo move
             for flip in flips:
@@ -49,18 +51,23 @@ class Minimax:
             
             #Update alpha-beta
             if player == 1:
-                best[0] = max(best[0], res[0])
-                alpha = max(best[0], alpha)
-                if best[0] == res[0] and (hasMoved and random() < 0.2) or (not hasMoved):
+                if best[0] < res[0] or (best[0] == res[0] and random() < 0.3):
+                    best[0] = res[0]
                     best[1] = [move]
                 
+                if best[0] > alpha:
+                    alpha = best[0]
+                
             else:
-                best[0] = min(best[0], res[0])
-                beta = min(best[0], beta)
-                if best[0] == res[0] and (hasMoved and random() < 0.2) or (not hasMoved):
+                if best[0] > res[0] or (best[0] == res[0] and random() < 0.3):
+                    best[0] = res[0]
                     best[1] = [move]
+                
+                if best[0] < beta:
+                    beta = best[0]
             
-            if beta <= alpha:
+            #Sign flipped?
+            if alpha >= beta:
                 break
         return best
 

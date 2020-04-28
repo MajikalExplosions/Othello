@@ -10,12 +10,13 @@ class Board:
         self.board = []
         self.stable = []
         for i in range(8):
-            self.board.append([0, 0, 0, 0, 0, 0, 0, 0])
+            self.board.append([])
             self.stable.append([])
-            self.count = [2, 2]
             for j in range(8):
                 self.stable[i].append(False)
-        
+                self.board[i].append(0)
+        self.stableCount = [0, 0]
+        self.count = [2, 2]
         self.board[3][3], self.board[4][4] = 1, 1
         self.board[3][4], self.board[4][3] = -1, -1
 
@@ -32,13 +33,7 @@ class Board:
         return self.count[(player + 1) // 2]
     
     def countStablePieces(self, player):
-        count = 0
-        for i in range(8):
-            for j in range(8):
-                if self.getPiece((i, j)) == player and self.stable[i][j]:
-                    count += 1
-        
-        return count
+        return self.stableCount[(player + 1) // 2]
 
     def getPiece(self, location):
         return self.board[location[0]][location[1]]
@@ -119,6 +114,8 @@ class Board:
         for i in range(8):
             for j in range(8):
                 self.stable[i][j] = False
+        self.stableCount[0] = 0
+        self.stableCount[1] = 0
 
     def updateStability(self):
         self.resetStability()
@@ -130,18 +127,22 @@ class Board:
         if self.getPiece((0, 0)) == player:
             queue.append((0, 0))
             self.stable[0][0] = True
+            self.stableCount[(player + 1) // 2] += 1
 
         if self.getPiece((7, 0)) == player:
             queue.append((7, 0))
             self.stable[7][0] = True
+            self.stableCount[(player + 1) // 2] += 1
 
         if self.getPiece((0, 7)) == player:
             queue.append((0, 7))
             self.stable[0][7] = True
+            self.stableCount[(player + 1) // 2] += 1
 
         if self.getPiece((7, 7)) == player:
             queue.append((7, 7))
             self.stable[7][7] = True
+            self.stableCount[(player + 1) // 2] += 1
         
         while len(queue) > 0:
             disc = queue.pop()
@@ -158,6 +159,7 @@ class Board:
                         diagUp = self._checkStable((x + 1, y + 1), player) or self._checkStable((x - 1, y - 1), player)
                         if horizontal and vertical and diagDown and diagUp:
                             self.stable[x][y] = True
+                            self.stableCount[(player + 1) // 2] += 1
                             queue.append((x, y))
 
     def _inRange(self, number):

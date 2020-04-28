@@ -14,8 +14,8 @@ from random import random
 def main():
     b = Board()
     #Black (-1) is the good bot, white (1) is the bad bot.  Don't worry about the last three tuples because those are AI utility parameters.
-    players = [OthelloBot(-1, b, (-2, 1), (0.75, 0.5), (5, 5)), OthelloBot(1, b, (1, 1), (0.1, 0.1), (0, 0))]
-    players[1].setDebug(True)
+    players = [OthelloBot(-1, b, [-2, 1], [0.75, 0.5], [5, 5]), OthelloBot(1, b, [-6.443624860176121, 4.457514907722221], [-0.1997017497463351, -2.9108142937614483], [1.804628451228265, 8.48468570765157])]
+    #players[1].setDebug(True)
     p = 0
     longest = 0
     while not b.gameOver():
