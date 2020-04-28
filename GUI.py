@@ -54,6 +54,9 @@ class GUI:
         self.newPiece(board,1,[4,4],False)
         self.newPiece(board,-1,[3,4],False)
         self.newPiece(board,-1,[4,3],False)
+
+        # make message
+        self.message = Text(Point(200,375),"message")
         
 
     def click(self):
@@ -126,21 +129,24 @@ class GUI:
         else:
             txt = "It is "+colorTxt+"'s turn - please click a valid open square."
 
-        return txt
+        self.message.setText(txt)
+        try:
+            self.message.draw(self.win)
+        except:
+            do = "idk"
 
     def newPiece(self,board,color,pos,flipInd):
         if flipInd==True:
             flipPieceLst = board.move(pos,color)
-            for piece in flipPieceList:
+            for piece in flipPieceLst:
                 color = piece[1]*-1
-                self.drawPiece(color,pos)
+                if color!=0:
+                    self.drawPiece(color,piece[0])
 
-        else:
-            self.drawPiece(color,pos)
-
-                
+        self.drawPiece(color,pos)
+        
     def drawPiece(self,color,pos):
-        coord = posToCoord(pos)
+        coord = self.posToCoord(pos)
         
         piece = Circle(coord,25)
         
@@ -150,24 +156,6 @@ class GUI:
             piece.setFill("black")
 
         piece.draw(self.win)
-        
-
-        
-##        flipPieceLst = board.setPiece(pos,color)
-##        
-##        coord = self.posToCoord(pos)
-##
-##        piece = Circle(coord,25)
-##        if color==1:
-##            piece.setFill("white")
-##        else:
-##            piece.setFill("black")
-##        piece.draw(self.win)
-##
-##        if flipInd==True:
-##            for piece in flipPieceLst:
-##                color = board.getPiece(piece)
-##                self.newPiece(board,(color*-1),piece,False)
                 
 
     def posToCoord(self,pos):
@@ -181,6 +169,27 @@ class GUI:
         pos = [0,0]
         pos[0] = int((x-500)//75)
         pos[1] = int((y-75)//75)
+        pos = (pos[0],pos[1])
         return pos
-    
+
+    def clickAnywhere(self):
+        coord = self.win.getMouse()
         
+        if self.quitButton.clicked(coord):
+            self.win.close()
+            return False
+        
+        return True
+
+    def highlightSquare(self,pos):
+        coord = self.posToCoord(pos)
+        x,y=(coord.getX()-(75/2)),(coord.getY()-(75/2))
+        coord1 = Point(x,y)
+        x,y=(coord.getX()+(75/2)),(coord.getY()+(75/2))
+        coord2 = Point(x,y)
+        self.square = Rectangle(coord1,coord2)
+        self.square.setFill("limegreen")
+        self.square.draw(self.win)
+
+    def unhighlightSquare(self):
+        self.square.undraw()
