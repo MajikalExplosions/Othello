@@ -4,6 +4,7 @@
 # This module implements the Minimax algorithm with alpha-beta pruning, used as part of the AI.
 
 from Board import Board
+from random import random
 
 #White is 1, and wants to maximize. Black is -1, and wants to minimize.  None is 0.
 class Minimax:
@@ -19,7 +20,6 @@ class Minimax:
 
     #Board is the board object, player is the current player, depth is the current depth, target is the depth I want to search to, alpha/beta is for pruning
     def minimax(self, player, depth, target, alpha, beta):
-
         #Base case: game over, or depth is too large
         if self.board.gameOver():
             b, w = self.board.countPieces(False), self.board.countPieces(True)
@@ -31,9 +31,9 @@ class Minimax:
         elif depth >= target:
             return [self._getUtility(depth), []]
         
-        #Initial best is to not move
-        best = [self._getUtility(depth), []]
-        
+        #Initial best is to lose
+        best = [player * self.INF * -1, []]
+        hasMoved = False
         for move in self.board.getMoves(player):
             
             #Move
@@ -51,17 +51,17 @@ class Minimax:
             if player == 1:
                 best[0] = max(best[0], res[0])
                 alpha = max(best[0], alpha)
-                if best[0] == res[0]:
-                    best[1].append(move)
+                if best[0] == res[0] and (hasMoved and random() < 0.2) or (not hasMoved):
+                    best[1] = [move]
+                
             else:
                 best[0] = min(best[0], res[0])
                 beta = min(best[0], beta)
-                if best[0] == res[0]:
-                    best[1].append(move)
+                if best[0] == res[0] and (hasMoved and random() < 0.2) or (not hasMoved):
+                    best[1] = [move]
             
             if beta <= alpha:
                 break
-        
         return best
 
     #Never called if it's game over, so assume the game is still running
@@ -102,6 +102,3 @@ class Minimax:
                 square = self.board.getPiece((i, j)) + 1
                 val = val * 3 + square
         return val
-    
-    def _getStability(self, team):
-        pass
