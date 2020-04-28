@@ -11,7 +11,7 @@ def main():
     board = Board()
     gui = GUI(board)
     human = gui.startGame()
-    bot = OthelloBot(human*-1,board,(0,1),(1,1),(2,2))
+    bot = OthelloBot(human*-1,board,(-6,2.5),(1,-2.2),(2.6,0.9))
     
     running=True
     turn = 1
@@ -45,14 +45,14 @@ def main():
                     running = False
                     break
                 else:
-                    # selected move invalid
+                    # selected move valid
                     if validMoves.count(clickPt)!=0:
                         gui.newPiece(board,turn,clickPt,True)
-                        sleep(1.5)
-                    # selected move valid
+                    # selected move invalid
                     else:
                         gui.updateMessage(turn,False,True,False)
                         turn*=-1
+                        sleep(1.5)
 
             # AI turn
             else:
