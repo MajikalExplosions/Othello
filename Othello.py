@@ -4,17 +4,22 @@
 # main runner
 
 from GUI import *
+from OthelloBot import *
 
 def main():
     board = Board()
     gui = GUI(board)
     human = gui.startGame()
-    whiteScore = 0
-    blackScore = 0
+    bot = OthelloBot(human*-1,board,(0,1),(1,1),(2,2))
     
     running=True
     turn = 1
     while running == True:
+        whiteScore = board.countPieces(1)
+        blackScore = board.countPieces(-1)
+        gui.updateScore(1,whiteScore)
+        gui.upateScore(-1,blackScore)
+        
         turn*=-1
         validMoves = board.getMoves(turn)
 
@@ -22,6 +27,8 @@ def main():
         if len(validMoves)==0:
             gui.updateMessage(turn,True,False)
             break
+
+        gui.updateMessage(turn,True,True)
         
         clickPt = gui.click()
         if clickPt=="Quit":
