@@ -14,6 +14,7 @@ class OthelloBot:
         self.minimax = Minimax(board, discMultiplier, mobilityMultiplier, stabilityMultiplier)
         self.board = board
         self.d = False
+        self.depthTotal = 0
     
     def setDebug(self, d):
         #Debug flag (random move)
@@ -32,13 +33,15 @@ class OthelloBot:
 
         move = []
         start, depth = time(), 2
-        while (time() - start) < 0.8 and depth <= self.board.movesRemaining():
+        while (time() - start) < 0.9 and depth <= self.board.movesRemaining():
             depth += 1
             print("Searching at depth", depth)
             start = time()
             move = self.minimax.minimax(self.team, depth, -1000000, 1000000)
             print("Search took:", (time() - start) * 1000, "ms\n")
-        
+        self.depthTotal += depth
+        if depth > self.board.movesRemaining() and self.board.movesRemaining() > 12:
+            self.depthTotal -= 1
         #Something wrong with the move returned
         if len(move) == 0 or len(move[1]) == 0:
             print("Getting debug move.")

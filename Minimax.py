@@ -107,7 +107,7 @@ class Minimax:
         #Stability is (on average) 20
         stabilityM = max(self.stabilityMultiplier[0] + (self.stabilityMultiplier[1] - self.stabilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0) * 2
 
-        utility = discM * (self.board.countPieces(1) - self.board.countPieces(-1))
+        utility = discM * (self.board.getScore(1) - self.board.getScore(-1))
         utility += stabilityM * (self.board.countStablePieces(1) - self.board.countStablePieces(-1))
         utility += mobilityM * (self.board.getMoveCount(1) - self.board.getMoveCount(-1))
 

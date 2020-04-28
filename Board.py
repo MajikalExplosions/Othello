@@ -18,6 +18,17 @@ class Board:
                 self.stable[i].append(False)
                 self.board[i].append(0)
         
+        self.scoreMatrix = [0, 0, 0, 0, 0, 0, 0, 0]
+
+        self.scoreMatrix[0] = [100, -10, 10, 5, 5, 10, -10, 100]
+        self.scoreMatrix[1] = [-10, -25, 0,  0, 0, 0, -25, -10]
+        self.scoreMatrix[2] =  [10,  0,  5,  0, 0, 5,  0, 10]
+        self.scoreMatrix[3] =   [5,  0,  0,  0, 0, 0,  0, 5]
+        self.scoreMatrix[4] =   [5,  0,  0,  0, 0, 0,  0, 5]
+        self.scoreMatrix[5] =  [10,  0,  5,  0, 0, 5,  0, 10]
+        self.scoreMatrix[6] = [-10, -25, 0,  0, 0, 0, -25, -10]
+        self.scoreMatrix[7] = [100, -10, 10, 5, 5, 10, -10, 100]
+        
         #The two below are the count of each player's pieces
         self.stableCount = [0, 0]
         self.count = [2, 2]
@@ -226,6 +237,15 @@ class Board:
     def _isStable(self, location):
         return self.stable[location[0]][location[1]]
     
+    def getScore(self, player):
+        score = 0
+        for i in range(8):
+            for j in range(8):
+                if self.board[i][j] == player:
+                    score += self.scoreMatrix[i][j]
+        
+        return score
+
     def _printBoard(self):
         print("\nBoard State:")
         for i in range(8):
