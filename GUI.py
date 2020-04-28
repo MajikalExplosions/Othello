@@ -56,7 +56,9 @@ class GUI:
         self.newPiece(board,-1,[4,3],False)
 
         # make message
-        self.message = Text(Point(200,375),"message")
+        self.message = Text(Point(225,375),"message")
+        self.message.setTextColor("white")
+        self.message.setSize(15)
         
 
     def click(self):
@@ -114,26 +116,30 @@ class GUI:
         else:
             self.blackScore.setText(str(score))
 
-    def updateMessage(self,color,moveInd,validMoveInd):
-
+    def updateMessage(self,color,moveInd,validMoveInd,gameOverInd):
+        
         # color
         if color==1:
             colorTxt = "White"
-        else:
+        elif color==-1:
             colorTxt = "Black"
 
-        if not moveInd:
-            txt = "This square is invalid. Please choose a valid square."
-        elif not validMoveInd:
-            txt = "You have no valid moves. Please click anywhere to continue."
-        else:
-            txt = "It is "+colorTxt+"'s turn - please click a valid open square."
+        if gameOverInd:
+            self.message.setText("Game over. "+colorTxt+" wins!")
 
-        self.message.setText(txt)
-        try:
-            self.message.draw(self.win)
-        except:
-            do = "idk"
+        else:
+            if not moveInd:
+                txt = "This square is invalid. Please choose a valid square."
+            elif not validMoveInd:
+                txt = "You have no valid moves. Please click anywhere to continue."
+            else:
+                txt = "It is "+colorTxt+"'s turn - please click a valid open square."
+
+            self.message.setText(txt)
+            try:
+                self.message.draw(self.win)
+            except:
+                do = "idk"
 
     def newPiece(self,board,color,pos,flipInd):
         if flipInd==True:
