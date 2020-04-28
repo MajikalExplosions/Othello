@@ -66,7 +66,7 @@ class Minimax:
                 if best[0] < beta:
                     beta = best[0]
             
-            #Sign flipped?
+            #If you're guaranteed a score higher than the best score that you can get from the rest of the moves, then break
             if alpha >= beta:
                 break
         return best
@@ -97,7 +97,7 @@ class Minimax:
 
         utility = discM * (self.board.countPieces(1) - self.board.countPieces(-1))
         utility += stabilityM * (self.board.countStablePieces(1) - self.board.countStablePieces(-1))
-        utility += mobilityM * (len(self.board.getMoves(1)) - len(self.board.getMoves(-1)))
+        utility += mobilityM * (self.board.getMoveCount(1) - self.board.getMoveCount(-1))
         #Now add it to hash table so we don't have to look it up anymore and return
         self.table[boardHash] = utility
         return utility

@@ -38,6 +38,35 @@ class Board:
     def getPiece(self, location):
         return self.board[location[0]][location[1]]
 
+    def getMoveCount(self, player):
+        count = 0
+        directions = [[0, 1], [1, 1], [1, 0], [-1, 1], [0, -1], [-1, -1], [-1, 0], [1, -1]]
+        for x in range(8):
+            for y in range(8):
+                canMove = False
+                if self.getPiece((x, y)) != 0:
+                    continue
+
+                for i in range(len(directions)):
+                    if (canMove):
+                        break
+                    d = directions[i]
+                    index = 2
+                    #Only move if the adjacent square is an enemy square
+                    if self._inRange(x + d[0]) and self._inRange(y + d[1]) and self.getPiece((x + d[0], y + d[1])) == player * -1:
+                        while self._inRange(x + d[0] * index) and self._inRange(y + d[1] * index):
+                            x2, y2 = x + d[0] * index, y + d[1] * index
+
+                            if self.getPiece((x2, y2)) == player:
+                                count += 1
+                                canMove = True
+                                break
+                            if self.getPiece((x2, y2)) == 0:
+                                break
+                            
+                            index += 1
+        return count
+
     def getMoves(self, player):
         validMoves = []
         directions = [[0, 1], [1, 1], [1, 0], [-1, 1], [0, -1], [-1, -1], [-1, 0], [1, -1]]
