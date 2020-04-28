@@ -7,7 +7,9 @@
 class Board:
 
     def __init__(self):
+        #Board is the board state (8x8)
         self.board = []
+        #Board is whether each piece is stable (8x8)
         self.stable = []
         for i in range(8):
             self.board.append([])
@@ -15,12 +17,17 @@ class Board:
             for j in range(8):
                 self.stable[i].append(False)
                 self.board[i].append(0)
+        
+        #The two below are the count of each player's pieces
         self.stableCount = [0, 0]
         self.count = [2, 2]
+
+        #Start of game
         self.board[3][3], self.board[4][4] = 1, 1
         self.board[3][4], self.board[4][3] = -1, -1
 
     def gameOver(self):
+        #Neither player can move
         return len(self.getMoves(-1)) == 0 and len(self.getMoves(1)) == 0
 
     def movesRemaining(self):
@@ -30,6 +37,7 @@ class Board:
         return 60 - self.movesRemaining()
 
     def countPieces(self, player):
+        #Black is 0, white is 1
         return self.count[(player + 1) // 2]
     
     def countStablePieces(self, player):
@@ -40,20 +48,26 @@ class Board:
 
     def getMoveCount(self, player):
         count = 0
+        #For each cell on the board
         directions = [[0, 1], [1, 1], [1, 0], [-1, 1], [0, -1], [-1, -1], [-1, 0], [1, -1]]
         for x in range(8):
             for y in range(8):
                 canMove = False
                 if self.getPiece((x, y)) != 0:
+                    #If the cell isn't empty then you can't play there
                     continue
-
+                
+                #For each direction, if you can capture a piece then you can move on the square. As soon as you find one you're done.
                 for i in range(len(directions)):
                     if (canMove):
                         break
                     d = directions[i]
                     index = 2
+
                     #Only move if the adjacent square is an enemy square
                     if self._inRange(x + d[0]) and self._inRange(y + d[1]) and self.getPiece((x + d[0], y + d[1])) == player * -1:
+                        
+                        #Go down the line and look for an enemy piece
                         while self._inRange(x + d[0] * index) and self._inRange(y + d[1] * index):
                             x2, y2 = x + d[0] * index, y + d[1] * index
 
@@ -68,6 +82,7 @@ class Board:
         return count
 
     def getMoves(self, player):
+        #See above, except instead of adding to count it adds the moves to a list
         validMoves = []
         directions = [[0, 1], [1, 1], [1, 0], [-1, 1], [0, -1], [-1, -1], [-1, 0], [1, -1]]
         for x in range(8):
@@ -98,7 +113,11 @@ class Board:
         return validMoves
 
     def setPiece(self, location, player):
+
+        #Set the piece itself
         oldPlayer = self.board[location[0]][location[1]]
+
+        #Update count variable
         if player == 0 and oldPlayer != 0:
             self.count[(oldPlayer + 1) // 2] -= 1
         if oldPlayer == 0:
@@ -109,6 +128,7 @@ class Board:
         
         self.board[location[0]][location[1]] = player
 
+        #Get the list of the pieces that need to be flipped, like the getMoves()
         directions = [[0, 1], [1, 1], [1, 0], [-1, 1], [0, -1], [-1, -1], [-1, 0], [1, -1]]
         locOpposites = []
         for i in range(len(directions)):
@@ -136,6 +156,7 @@ class Board:
             old.append((f, self.getPiece(f)))
             self.setPiece(f, player)
         
+        #Move then update stability
         self.updateStability()
         return old
 
@@ -176,12 +197,15 @@ class Board:
         while len(queue) > 0:
             disc = queue.pop()
             #Update all adjacent squares for stability
+            #Uses flood fill with disc as the queue
+            #See https://en.wikipedia.org/wiki/Flood_fill
             for dx in [-1, 0, 1]:
                 for dy in [-1, 0, 1]:
                     #If either dx or dy are non-zero then it's not the center square
                     #If in range AND not center square AND not stable
                     x, y = disc[0] + dx, disc[1] + dy
                     if self._inRange(x) and self._inRange(y) and (dx != 0 or dy != 0) and not self._isStable((x, y)) and self.getPiece((x, y)) == player:
+                        #If none of the four lines can be flipped then it's stable.
                         horizontal = self._checkStable((x + 1, y), player) or self._checkStable((x - 1, y), player)
                         vertical = self._checkStable((x, y + 1), player) or self._checkStable((x, y - 1), player)
                         diagDown = self._checkStable((x + 1, y - 1), player) or self._checkStable((x - 1, y + 1), player)
