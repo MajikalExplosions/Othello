@@ -29,10 +29,8 @@ class OthelloBot:
         
         if self.board.movesRemaining() <= 8:
             move = self.minimax.minimax(self.team, 0, 8, -1000000, 1000000)
-        elif self.board.movesRemaining() <= 10:
-            move = self.minimax.minimax(self.team, 0, 7, -1000000, 1000000)
         elif self.board.movesRemaining() <= 12:
-            move = self.minimax.minimax(self.team, 0, 6, -1000000, 1000000)
+            move = self.minimax.minimax(self.team, 0, 5, -1000000, 1000000)
         else:
             move = self.minimax.minimax(self.team, 0, 3, -1000000, 1000000)
         if len(move) == 0 or len(move[1]) == 0:

@@ -33,6 +33,7 @@ class Minimax:
         
         #Initial best is to lose
         best = [player * self.INF * -1, []]
+
         hasMoved = False
         for move in self.board.getMoves(player):
             
@@ -53,15 +54,19 @@ class Minimax:
                 alpha = max(best[0], alpha)
                 if best[0] == res[0] and (hasMoved and random() < 0.2) or (not hasMoved):
                     best[1] = [move]
+                    hasMoved = True
                 
             else:
                 best[0] = min(best[0], res[0])
                 beta = min(best[0], beta)
                 if best[0] == res[0] and (hasMoved and random() < 0.2) or (not hasMoved):
                     best[1] = [move]
+                    hasMoved = True
             
-            if beta <= alpha:
+            #Sign flipped?
+            if alpha >= beta:
                 break
+        
         return best
 
     #Never called if it's game over, so assume the game is still running
