@@ -5,6 +5,7 @@
 
 from GUI import *
 from OthelloBot import *
+from time import *
 
 def main():
     board = Board()
@@ -18,7 +19,7 @@ def main():
         whiteScore = board.countPieces(1)
         blackScore = board.countPieces(-1)
         gui.updateScore(1,whiteScore)
-        gui.upateScore(-1,blackScore)
+        gui.updateScore(-1,blackScore)
         
         turn*=-1
         validMoves = board.getMoves(turn)
@@ -26,19 +27,32 @@ def main():
         # no valid moves, go to other player's turn
         if len(validMoves)==0:
             gui.updateMessage(turn,True,False)
+            running = gui.clickAnywhere()
             break
 
         gui.updateMessage(turn,True,True)
-        
-        clickPt = gui.click()
-        if clickPt=="Quit":
-            running=False
-            break
-        else:
-            if validMoves.index(clickPt)!=0:
-                gui.newPiece(board,turn,clickPt,True)
+
+        # human player turn
+        if turn==human:
+            clickPt = gui.click()
+            if clickPt=="Quit":
+                running = False
+                break
             else:
-                gui.updateMessage(turn,False,True)
-                turn*=-1
+                if validMoves.count(clickPt)!=0:
+                    gui.newPiece(board,turn,clickPt,True)
+                else:
+                    gui.updateMessage(turn,False,True)
+                    turn*=-1
+
+        # AI turn
+        else:
+            sleep(1.5)
+            move = bot.getMove()
+            gui.highlightSquare(move)
+            gui.newPiece(board,turn,move,True)
+            sleep(1.5)
+            gui.unhighlightSquare()
+            
 
 main()
