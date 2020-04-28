@@ -16,11 +16,22 @@ def main():
     turn = 1
     while running == True:
         turn*=-1
+        validMoves = board.getMoves(turn)
+
+        # no valid moves, go to other player's turn
+        if len(validMoves)==0:
+            gui.updateMessage(turn,True,False)
+            break
+        
         clickPt = gui.click()
         if clickPt=="Quit":
             running=False
             break
         else:
-            gui.newPiece(board,turn,clickPt,True)
+            if validMoves.index(clickPt)!=0:
+                gui.newPiece(board,turn,clickPt,True)
+            else:
+                gui.updateMessage(turn,False,True)
+                turn*=-1
 
 main()
