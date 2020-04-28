@@ -24,17 +24,20 @@ class OthelloBot:
         return self.team
     
     def getMove(self):
+        
         if self.d:
             return self.getDebugMove()
-        
         if self.board.movesRemaining() <= 8:
-            move = self.minimax.minimax(self.team, 0, 8, -1000000, 1000000)
+            move = self.minimax.minimax(self.team, 8, -1000000, 1000000)
+        elif self.board.movesRemaining() <= 10:
+            move = self.minimax.minimax(self.team, 5, -1000000, 1000000)
         elif self.board.movesRemaining() <= 12:
-            move = self.minimax.minimax(self.team, 0, 5, -1000000, 1000000)
+            move = self.minimax.minimax(self.team, 4, -1000000, 1000000)
         else:
-            move = self.minimax.minimax(self.team, 0, 3, -1000000, 1000000)
+            move = self.minimax.minimax(self.team, 3, -1000000, 1000000)
         if len(move) == 0 or len(move[1]) == 0:
             return self.getDebugMove()
+            
         return move[1][-1]
 
     def getDebugMove(self):
