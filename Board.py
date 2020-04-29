@@ -20,14 +20,14 @@ class Board:
         
         self.scoreMatrix = [0, 0, 0, 0, 0, 0, 0, 0]
 
-        self.scoreMatrix[0] = [100, -10, 10, 5, 5, 10, -10, 100]
-        self.scoreMatrix[1] = [-10, -25, 0,  0, 0, 0, -25, -10]
-        self.scoreMatrix[2] =  [10,  0,  5,  0, 0, 5,  0, 10]
-        self.scoreMatrix[3] =   [5,  0,  0,  0, 0, 0,  0, 5]
-        self.scoreMatrix[4] =   [5,  0,  0,  0, 0, 0,  0, 5]
-        self.scoreMatrix[5] =  [10,  0,  5,  0, 0, 5,  0, 10]
-        self.scoreMatrix[6] = [-10, -25, 0,  0, 0, 0, -25, -10]
-        self.scoreMatrix[7] = [100, -10, 10, 5, 5, 10, -10, 100]
+        self.scoreMatrix[0] = [1.00, -0.2, 0.10, 0.05, 0.05, 0.10, -0.2, 1.00]
+        self.scoreMatrix[1] = [-0.2, -0.4, 0.00, 0.00, 0.00, 0.00, -0.4, -0.2]
+        self.scoreMatrix[2] = [0.10, 0.00, 0.10, 0.01, 0.01, 0.10, 0.00, 0.10]
+        self.scoreMatrix[3] = [0.05, 0.00, 0.01, 0.00, 0.00, 0.01, 0.00, 0.05]
+        self.scoreMatrix[4] = [0.05, 0.00, 0.01, 0.00, 0.00, 0.01, 0.00, 0.05]
+        self.scoreMatrix[5] = [0.10, 0.00, 0.10, 0.01, 0.01, 0.10, 0.00, 0.10]
+        self.scoreMatrix[6] = [-0.2, -0.4, 0.00, 0.00, 0.00, 0.00, -0.4, -0.2]
+        self.scoreMatrix[7] = [1.00, -0.2, 0.10, 0.05, 0.05, 0.10, -0.2, 1.00]
         
         #The two below are the count of each player's pieces
         self.stableCount = [0, 0]
@@ -242,7 +242,8 @@ class Board:
         for i in range(8):
             for j in range(8):
                 if self.board[i][j] == player:
-                    score += self.scoreMatrix[i][j]
+                    #+25 because I don't want to return a negative number.
+                    score += self.scoreMatrix[i][j] + 25
         
         return score
 

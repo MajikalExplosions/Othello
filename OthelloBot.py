@@ -33,18 +33,25 @@ class OthelloBot:
 
         move = []
         start, depth = time(), 2
-        while (time() - start) < 0.9 and depth <= self.board.movesRemaining():
+        while (time() - start) < 3 and depth <= self.board.movesRemaining():
             depth += 1
-            print("Searching at depth", depth)
+            #print("Searching at depth", depth)
             start = time()
-            move = self.minimax.minimax(self.team, depth, -1000000, 1000000)
-            print("Search took:", (time() - start) * 1000, "ms\n")
+            #The following function also breaks if it goes over the time limit
+            move2 = self.minimax.minimax(self.team, depth, -1000000, 1000000, start)
+            if time() - start < 7:
+                move = move2
+            else:
+                #print("Search truncated.")
+                depth -= 1
+            
+            #print("Search took:", (time() - start) * 1000, "ms\n")
         self.depthTotal += depth
         if depth > self.board.movesRemaining() and self.board.movesRemaining() > 12:
             self.depthTotal -= 1
         #Something wrong with the move returned
         if len(move) == 0 or len(move[1]) == 0:
-            print("Getting debug move.")
+            #print("Getting debug move.")
             return self.getDebugMove()
         
         return move[1][-1]

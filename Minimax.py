@@ -5,6 +5,7 @@
 
 from Board import Board
 from random import random
+from time import time
 
 #White is 1, and wants to maximize. Black is -1, and wants to minimize.  None is 0.
 class Minimax:
@@ -19,9 +20,10 @@ class Minimax:
         #Dictionary, works as a hash table
         self.table = {}
         self.board = board
+        self.old = False
 
     #Board is the board object, player is the current player, depth is the current depth, target is the depth I want to search to, alpha/beta is for pruning
-    def minimax(self, player, depth, alpha, beta):
+    def minimax(self, player, depth, alpha, beta, start):
         #Base case: game over, or depth is too large
         if self.board.gameOver():
             #If someone won, then this scenario is infinite points for them
@@ -33,7 +35,7 @@ class Minimax:
             #0 points if tie
             return [0, []]
 
-        elif depth == 0:
+        elif depth == 0 or (depth >= 4 and time() - start > 7):
             #If we've searched through depth moves, then return the current board's utility
             return [self._getUtility(self.board.getMoveNumber()), []]
         
@@ -48,7 +50,7 @@ class Minimax:
             flips = self.board.move(move, player)
 
             #Recurse and simulate moves after this move for the opposite player (who wants to do as well as possible)
-            res = self.minimax(-1 * player, depth - 1, alpha, beta)
+            res = self.minimax(-1 * player, depth - 1, alpha, beta, start)
 
             #Undo move
             for flip in flips:
@@ -102,14 +104,16 @@ class Minimax:
         discM = max(self.discMultiplier[0] + (self.discMultiplier[1] - self.discMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
 
         #Mobility is (on average) 8
-        mobilityM = max(self.mobilityMultiplier[0] + (self.mobilityMultiplier[1] - self.mobilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0) * 5
+        mobilityM = max(self.mobilityMultiplier[0] + (self.mobilityMultiplier[1] - self.mobilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
 
         #Stability is (on average) 20
-        stabilityM = max(self.stabilityMultiplier[0] + (self.stabilityMultiplier[1] - self.stabilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0) * 2
-
-        utility = discM * (self.board.getScore(1) - self.board.getScore(-1))
-        utility += stabilityM * (self.board.countStablePieces(1) - self.board.countStablePieces(-1))
-        utility += mobilityM * (self.board.getMoveCount(1) - self.board.getMoveCount(-1))
+        stabilityM = max(self.stabilityMultiplier[0] + (self.stabilityMultiplier[1] - self.stabilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
+        if self.old:
+            utility = discM * (self.board.countPieces(1) - self.board.countPieces(-1))
+        else:
+            utility = 8 * discM * (self.board.getScore(1) - self.board.getScore(-1))
+        utility += 5 * stabilityM * (self.board.countStablePieces(1) - self.board.countStablePieces(-1))
+        utility += 2 * mobilityM * (self.board.getMoveCount(1) - self.board.getMoveCount(-1))
 
         #Now add it to hash table so we don't have to recalculate it anymore and return
         self.table[boardHash] = utility
