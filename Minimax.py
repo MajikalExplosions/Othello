@@ -101,19 +101,17 @@ class Minimax:
         
         utility = 0
         #It's not in the table yet, so find the utility
+
         discM = max(self.discMultiplier[0] + (self.discMultiplier[1] - self.discMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
-
-        #Mobility is (on average) 8
         mobilityM = max(self.mobilityMultiplier[0] + (self.mobilityMultiplier[1] - self.mobilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
-
-        #Stability is (on average) 20
         stabilityM = max(self.stabilityMultiplier[0] + (self.stabilityMultiplier[1] - self.stabilityMultiplier[0]) / 60 * self.board.getMoveNumber(), 0)
+
         if self.old:
             utility = discM * (self.board.countPieces(1) - self.board.countPieces(-1))
         else:
-            utility = 8 * discM * (self.board.getScore(1) - self.board.getScore(-1))
-        utility += 5 * stabilityM * (self.board.countStablePieces(1) - self.board.countStablePieces(-1))
-        utility += 2 * mobilityM * (self.board.getMoveCount(1) - self.board.getMoveCount(-1))
+            utility = 2 * discM * (self.board.getScore(1) - self.board.getScore(-1))
+        utility += stabilityM * (self.board.countStablePieces(1) - self.board.countStablePieces(-1))
+        utility += 0.5 * mobilityM * (self.board.getMoveCount(1) - self.board.getMoveCount(-1))
 
         #Now add it to hash table so we don't have to recalculate it anymore and return
         self.table[boardHash] = utility

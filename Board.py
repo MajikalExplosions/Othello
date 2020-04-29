@@ -22,10 +22,10 @@ class Board:
 
         self.scoreMatrix[0] = [1.00, -0.2, 0.10, 0.05, 0.05, 0.10, -0.2, 1.00]
         self.scoreMatrix[1] = [-0.2, -0.4, 0.00, 0.00, 0.00, 0.00, -0.4, -0.2]
-        self.scoreMatrix[2] = [0.10, 0.00, 0.10, 0.01, 0.01, 0.10, 0.00, 0.10]
-        self.scoreMatrix[3] = [0.05, 0.00, 0.01, 0.00, 0.00, 0.01, 0.00, 0.05]
-        self.scoreMatrix[4] = [0.05, 0.00, 0.01, 0.00, 0.00, 0.01, 0.00, 0.05]
-        self.scoreMatrix[5] = [0.10, 0.00, 0.10, 0.01, 0.01, 0.10, 0.00, 0.10]
+        self.scoreMatrix[2] = [0.10, 0.00, 0.10, 0.02, 0.02, 0.10, 0.00, 0.10]
+        self.scoreMatrix[3] = [0.05, 0.00, 0.02, 0.02, 0.02, 0.02, 0.00, 0.05]
+        self.scoreMatrix[4] = [0.05, 0.00, 0.02, 0.02, 0.02, 0.02, 0.00, 0.05]
+        self.scoreMatrix[5] = [0.10, 0.00, 0.10, 0.02, 0.02, 0.10, 0.00, 0.10]
         self.scoreMatrix[6] = [-0.2, -0.4, 0.00, 0.00, 0.00, 0.00, -0.4, -0.2]
         self.scoreMatrix[7] = [1.00, -0.2, 0.10, 0.05, 0.05, 0.10, -0.2, 1.00]
         
@@ -242,8 +242,8 @@ class Board:
         for i in range(8):
             for j in range(8):
                 if self.board[i][j] == player:
-                    #+25 because I don't want to return a negative number.
-                    score += self.scoreMatrix[i][j] + 25
+                    #+0.4 because I don't want to return a negative number.
+                    score += self.scoreMatrix[i][j] + 0.4
         
         return score
 

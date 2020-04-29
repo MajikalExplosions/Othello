@@ -5,13 +5,14 @@
 
 from Minimax import Minimax
 import random
-
+from time import time
 class OthelloBotB:
 
     def __init__(self, team, board, discMultiplier, mobilityMultiplier, stabilityMultiplier):
         self.team = team
         #Minimax is basically a simulator
         self.minimax = Minimax(board, discMultiplier, mobilityMultiplier, stabilityMultiplier)
+        self.minimax.old = True
         self.board = board
         self.d = False
     
@@ -32,30 +33,30 @@ class OthelloBotB:
         
         #If we're in the endgame, look further ahead based on the number of moves remaining.
         if self.board.movesRemaining() <= 8:
-            print("Searching at depth 8")
-            move = self.minimax.minimax(self.team, 8, -1000000, 1000000)
+            #print("Searching at depth 8")
+            move = self.minimax.minimax(self.team, 8, -1000000, 1000000, time())
         elif self.board.movesRemaining() <= 10:
-            print("Searching at depth 5")
-            move = self.minimax.minimax(self.team, 5, -1000000, 1000000)
+            #print("Searching at depth 5")
+            move = self.minimax.minimax(self.team, 5, -1000000, 1000000, time())
         elif self.board.movesRemaining() <= 12:
-            print("Searching at depth 4")
-            move = self.minimax.minimax(self.team, 4, -1000000, 1000000)
+            #print("Searching at depth 4")
+            move = self.minimax.minimax(self.team, 4, -1000000, 1000000, time())
         else:
             #If we're not in the endgame, use the number of valid moves to decide how deep to search
             moveCount = self.board.getMoveCount(self.team)
             if moveCount <= 5:
-                print("Searching at depth 5")
-                move = self.minimax.minimax(self.team, 5, -1000000, 1000000)
+                #print("Searching at depth 5")
+                move = self.minimax.minimax(self.team, 5, -1000000, 1000000, time())
             elif moveCount <= 9:
-                print("Searching at depth 4")
-                move = self.minimax.minimax(self.team, 4, -1000000, 1000000)
+                #print("Searching at depth 4")
+                move = self.minimax.minimax(self.team, 4, -1000000, 1000000, time())
             else:
-                print("Searching at depth 3")
-                move = self.minimax.minimax(self.team, 3, -1000000, 1000000)
+                #print("Searching at depth 3")
+                move = self.minimax.minimax(self.team, 3, -1000000, 1000000, time())
         
         #Something wrong with the move returned
         if len(move) == 0 or len(move[1]) == 0:
-            print("Getting debug move.")
+            #print("Getting debug move.")
             return self.getDebugMove()
         
         return move[1][-1]
