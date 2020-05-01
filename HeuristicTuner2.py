@@ -39,8 +39,8 @@ def runGame(players, board):
 def main():
     board = Board()
     #bestArgs = [[-2, 1], [0.75, 0.5], [5, 5]]
-    bestArgs = [[3, -1], [2.35, 3], [-0.6, -2.9]]
-    newArgs = [[3, -1], [2.35, 3], [-0.6, -2.9]]
+    bestArgs = [[5, -1], [0.1, 0.1], [1, 5]]
+    newArgs = [[5, -1], [0.1, 0.1], [1, 5]]
     bestScore = 0
     
     #P1 is benchmark - P2 tries to maximize their winrate against P1
