@@ -16,7 +16,7 @@ class Minimax:
         self.mobilityMultiplier = mobilityMultiplier
         self.stabilityMultiplier = stabilityMultiplier
         #Very Large Number TM
-        self.INF = 1000000
+        self.INF = 10000000
         #Dictionary, works as a hash table
         self.table = {}
         self.board = board
@@ -24,10 +24,14 @@ class Minimax:
 
     #Board is the board object, player is the current player, depth is the current depth, target is the depth I want to search to, alpha/beta is for pruning
     def minimax(self, player, depth, alpha, beta, start):
+        if (depth >= 3 and time() - start > 10):
+            return [0, []]
         #Base case: game over, or depth is too large
-        if self.board.gameOver():
+        if self.board.movesRemaining() == 0 and not self.board.gameOver():
+            print("Wait what just happened")
+        if self.board.gameOver() or self.board.movesRemaining() == 0:
             #If someone won, then this scenario is infinite points for them
-            b, w = self.board.countPieces(False), self.board.countPieces(True)
+            b, w = self.board.countPieces(-1), self.board.countPieces(1)
             if w > b:
                 return [self.INF, []]
             elif w < b:
@@ -35,7 +39,7 @@ class Minimax:
             #0 points if tie
             return [0, []]
 
-        elif depth == 0 or (depth >= 4 and time() - start > 7):
+        elif depth == 0:
             #If we've searched through depth moves, then return the current board's utility
             return [self._getUtility(self.board.getMoveNumber()), []]
         
@@ -44,7 +48,8 @@ class Minimax:
         best = [player * self.INF * -1, []]
 
         #Simulate all moves that the player can move
-        for move in self.board.getMoves(player):
+        allMoves = self.board.getMoves(player)
+        for move in allMoves:
             
             #Move
             flips = self.board.move(move, player)
@@ -65,7 +70,7 @@ class Minimax:
                 #White wants to maximize
                 if best[0] < res[0] or (best[0] == res[0] and random() < 0.3):
                     best[0] = res[0]
-                    best[1] = [move]
+                    best[1] = res[1] + [move]
                 
                 #Update alpha, because you can always pick the current move
                 if best[0] > alpha:
@@ -75,7 +80,7 @@ class Minimax:
             else:
                 if best[0] > res[0] or (best[0] == res[0] and random() < 0.3):
                     best[0] = res[0]
-                    best[1] = [move]
+                    best[1] = res[1] + [move]
                 
                 if best[0] < beta:
                     beta = best[0]
@@ -83,7 +88,6 @@ class Minimax:
             #If you're guaranteed a score higher than the best score that you can get from the rest of the moves, then break
             if alpha >= beta:
                 break
-        
         #Return the best move you find and its utility
         return best
 
@@ -95,7 +99,7 @@ class Minimax:
         #Stability (number of stable pieces)
 
         #Use a "hash table" aka dictionary, only computing new utilities if necessary
-        boardHash = self._hash(depth)
+        boardHash = self._hash()
         if boardHash in self.table:
             return self.table[boardHash]
         
@@ -117,9 +121,9 @@ class Minimax:
         self.table[boardHash] = utility
         return utility
 
-    def _hash(self, depth):
+    def _hash(self):
         #Converts each unique board state to a unique number as a key for the dictionary
-        val = depth + 1
+        val = 0
         for i in range(8):
             for j in range(8):
                 square = self.board.getPiece((i, j)) + 1

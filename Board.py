@@ -20,18 +20,21 @@ class Board:
         
         self.scoreMatrix = [0, 0, 0, 0, 0, 0, 0, 0]
 
-        self.scoreMatrix[0] = [1.00, -0.2, 0.10, 0.05, 0.05, 0.10, -0.2, 1.00]
+        self.scoreMatrix[0] = [1.00, -0.2, 0.05, 0.03, 0.03, 0.05, -0.2, 1.00]
         self.scoreMatrix[1] = [-0.2, -0.4, 0.00, 0.00, 0.00, 0.00, -0.4, -0.2]
-        self.scoreMatrix[2] = [0.10, 0.00, 0.10, 0.02, 0.02, 0.10, 0.00, 0.10]
-        self.scoreMatrix[3] = [0.05, 0.00, 0.02, 0.02, 0.02, 0.02, 0.00, 0.05]
-        self.scoreMatrix[4] = [0.05, 0.00, 0.02, 0.02, 0.02, 0.02, 0.00, 0.05]
-        self.scoreMatrix[5] = [0.10, 0.00, 0.10, 0.02, 0.02, 0.10, 0.00, 0.10]
+        self.scoreMatrix[2] = [0.05, 0.00, 0.08, 0.02, 0.02, 0.08, 0.00, 0.05]
+        self.scoreMatrix[3] = [0.03, 0.00, 0.02, 0.01, 0.01, 0.02, 0.00, 0.03]
+        self.scoreMatrix[4] = [0.03, 0.00, 0.02, 0.01, 0.01, 0.02, 0.00, 0.03]
+        self.scoreMatrix[5] = [0.05, 0.00, 0.08, 0.02, 0.02, 0.08, 0.00, 0.05]
         self.scoreMatrix[6] = [-0.2, -0.4, 0.00, 0.00, 0.00, 0.00, -0.4, -0.2]
-        self.scoreMatrix[7] = [1.00, -0.2, 0.10, 0.05, 0.05, 0.10, -0.2, 1.00]
+        self.scoreMatrix[7] = [1.00, -0.2, 0.05, 0.03, 0.03, 0.05, -0.2, 1.00]
         
         #The two below are the count of each player's pieces
         self.stableCount = [0, 0]
         self.count = [2, 2]
+
+        self.hasFoundMoves = [False, False]
+        self.moves = [[], []]
 
         #Start of game
         self.board[3][3], self.board[4][4] = 1, 1
@@ -39,7 +42,7 @@ class Board:
 
     def gameOver(self):
         #Neither player can move
-        return len(self.getMoves(-1)) == 0 and len(self.getMoves(1)) == 0
+        return self.getMoveCount(-1) == 0 and self.getMoveCount(1) == 0
 
     def movesRemaining(self):
         return 64 - self.count[0] - self.count[1]
@@ -58,41 +61,12 @@ class Board:
         return self.board[location[0]][location[1]]
 
     def getMoveCount(self, player):
-        count = 0
-        #For each cell on the board
-        directions = [[0, 1], [1, 1], [1, 0], [-1, 1], [0, -1], [-1, -1], [-1, 0], [1, -1]]
-        for x in range(8):
-            for y in range(8):
-                canMove = False
-                if self.getPiece((x, y)) != 0:
-                    #If the cell isn't empty then you can't play there
-                    continue
-                
-                #For each direction, if you can capture a piece then you can move on the square. As soon as you find one you're done.
-                for i in range(len(directions)):
-                    if (canMove):
-                        break
-                    d = directions[i]
-                    index = 2
-
-                    #Only move if the adjacent square is an enemy square
-                    if self._inRange(x + d[0]) and self._inRange(y + d[1]) and self.getPiece((x + d[0], y + d[1])) == player * -1:
-                        
-                        #Go down the line and look for an enemy piece
-                        while self._inRange(x + d[0] * index) and self._inRange(y + d[1] * index):
-                            x2, y2 = x + d[0] * index, y + d[1] * index
-
-                            if self.getPiece((x2, y2)) == player:
-                                count += 1
-                                canMove = True
-                                break
-                            if self.getPiece((x2, y2)) == 0:
-                                break
-                            
-                            index += 1
-        return count
+        return len(self.getMoves(player))
 
     def getMoves(self, player):
+        if self.hasFoundMoves[(player + 1) // 2]:
+            return self.moves[(player + 1) // 2]
+        
         #See above, except instead of adding to count it adds the moves to a list
         validMoves = []
         directions = [[0, 1], [1, 1], [1, 0], [-1, 1], [0, -1], [-1, -1], [-1, 0], [1, -1]]
@@ -121,10 +95,15 @@ class Board:
                                 break
                             
                             index += 1
+        
+        #If it's finding new moves then cache it
+        self.hasFoundMoves[(player + 1) // 2] = True
+        self.moves[(player + 1) // 2] = validMoves
         return validMoves
 
     def setPiece(self, location, player):
-
+        self.hasFoundMoves = [False, False]
+        self.moves = [[], []]
         #Set the piece itself
         oldPlayer = self.board[location[0]][location[1]]
 
@@ -243,7 +222,7 @@ class Board:
             for j in range(8):
                 if self.board[i][j] == player:
                     #+0.4 because I don't want to return a negative number.
-                    score += self.scoreMatrix[i][j] + 0.4
+                    score += self.scoreMatrix[i][j]
         
         return score
 

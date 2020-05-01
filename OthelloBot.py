@@ -33,31 +33,48 @@ class OthelloBot:
 
         move = []
         start, depth = time(), 2
-        while (time() - start) < 3 and depth <= self.board.movesRemaining() and depth <= 12:
-            depth += 1
-            #print("Searching at depth", depth)
-            start = time()
-            #The following function also breaks if it goes over the time limit
+        while (time() - start) < 10 and depth <= self.board.movesRemaining():
+
+            cTime = time()
             move2 = self.minimax.minimax(self.team, depth, -1000000, 1000000, start)
-            if time() - start < 0.05 and depth <= 12:
-                depth = min(depth + 2, 12)
-            elif time() - start < 0.5 and depth <= 12:
-                depth = min(depth + 1, 12)
-            elif time() - start < 7 and depth <= 12:
+
+            #First check for base case
+            if depth == self.board.movesRemaining():
+                if time() - start < 10:
+                    move = move2
+                break
+            
+            #Check for increasing depths
+            if time() - cTime < 0.03:
+                depth += 2
+            elif time() - cTime < 0.3:
+                depth += 1
+            
+            #If search wasn't truncated
+            if time() - start < 10:
                 move = move2
             else:
-                #print("Search truncated.")
+                #Search was truncated, so last search was -1 depth (probably)
                 depth -= 1
                 break
             
-            #print("Search took:", (time() - start) * 1000, "ms\n")
+            move = move2
+            #Do not allow higher depth than remaining move count
+            depth = min(depth + 1, self.board.movesRemaining())
+            
+        print("Search took:", (time() - start) * 1000, "ms and went to depth", depth,"\n")
+        #Following 3 lines is for averages
         self.depthTotal += depth
         if depth > self.board.movesRemaining() and self.board.movesRemaining() > 12:
             self.depthTotal -= 1
         #Something wrong with the move returned
+        if not len(move) == 0 and len(move[1]) == 0:
+            print("No valid move.")
+        
         if len(move) == 0 or len(move[1]) == 0:
-            #print("Getting debug move.")
+            print("Getting debug move.")
             return self.getDebugMove()
+        
         
         return move[1][-1]
 
