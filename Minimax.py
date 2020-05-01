@@ -24,7 +24,7 @@ class Minimax:
 
     #Board is the board object, player is the current player, depth is the current depth, target is the depth I want to search to, alpha/beta is for pruning
     def minimax(self, player, depth, alpha, beta, start):
-        if (depth >= 3 and time() - start > 10):
+        if (depth >= 3 and time() - start > 9.5):
             return [0, []]
         #Base case: game over, or depth is too large
         if self.board.movesRemaining() == 0 and not self.board.gameOver():

@@ -33,14 +33,14 @@ class OthelloBot:
 
         move = []
         start, depth = time(), 2
-        while (time() - start) < 10 and depth <= self.board.movesRemaining():
+        while (time() - start) < 9.5 and depth <= self.board.movesRemaining():
 
             cTime = time()
             move2 = self.minimax.minimax(self.team, depth, -1000000, 1000000, start)
 
             #First check for base case
             if depth == self.board.movesRemaining():
-                if time() - start < 10:
+                if time() - start < 9.5:
                     move = move2
                 break
             
@@ -51,7 +51,7 @@ class OthelloBot:
                 depth += 1
             
             #If search wasn't truncated
-            if time() - start < 10:
+            if time() - start < 9.5:
                 move = move2
             else:
                 #Search was truncated, so last search was -1 depth (probably)
