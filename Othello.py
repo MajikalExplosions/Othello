@@ -11,7 +11,7 @@ def main():
     board = Board()
     gui = GUI(board)
     human = gui.startGame()
-    bot = OthelloBot(human*-1,board,[1.25, 0.25], [0.0, 0.0], [0.5, 1.5])
+    bot = OthelloBot(human*-1,board,[1.25, 0.25], [0.1, 0.0], [0.5, 1.5])
     
     running=True
     turn = 1

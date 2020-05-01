@@ -75,7 +75,7 @@ class OthelloBot:
             print("Getting debug move.")
             return self.getDebugMove()
         
-        
+
         return move[1][-1]
 
     def getDebugMove(self):
